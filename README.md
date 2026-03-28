@@ -51,7 +51,7 @@ El motor financiero del simulador implementa:
 ---
 
 ## 🛠️ Herramientas y Tecnologías
-* **Lenguaje:** [C#](https://learn.microsoft.com/en-us/dotnet/csharp/)
+* **Lenguaje:** C#
 * **Entorno de Desarrollo:** Visual Studio / VS Code.
 * **Control de Versiones:** GitHub.
 * **Arquitectura:** Programación Orientada a Objetos (POO) con Polimorfismo.
