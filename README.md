@@ -50,7 +50,7 @@ El motor financiero del simulador implementa:
 
 ---
 
-## 🛠️ Herramientas y Tecnologías
+## Herramientas y Tecnologías
 * **Lenguaje:** C#
 * **Entorno de Desarrollo:** Visual Studio / VS Code.
 * **Control de Versiones:** GitHub.
