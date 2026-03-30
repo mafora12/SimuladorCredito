@@ -8,48 +8,73 @@ namespace SimuladorCredito
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("=== SIMULADOR DE CRÉDITO ===\n");
+            Console.WriteLine("=== SIMULADOR DE CRÉDITO PROFESIONAL ===\n");
+
+            Console.WriteLine("Seleccione modalidad: 1. Cuota Fija, 2. Abono Constante, 3. Variable-Cuota Fija");
+            int opcion = int.Parse(Console.ReadLine() ?? "0");
+
 
             Console.Write("Monto del crédito: ");
-            decimal principal = decimal.Parse(Console.ReadLine());
+            decimal monto = decimal.Parse(Console.ReadLine() ?? "0");
 
-            Console.Write("Tasa (%): ");
-            double tasa = double.Parse(Console.ReadLine()) / 100;
+            Console.Write("Tasa de interés (%): ");
+            double tasaInput = double.Parse(Console.ReadLine() ?? "0") / 100;
 
-            Console.Write("Tipo (nominal/efectiva): ");
-            string tipo = Console.ReadLine();
+            Console.Write("Tipo (Nominal/Efectiva): ");
+            string? tipo = Console.ReadLine();
 
-            Console.Write("Clase (vencida/anticipada): ");
-            string clase = Console.ReadLine();
+            Console.Write("Clase (Vencida/Anticipada): ");
+            string? clase = Console.ReadLine();
 
-            Console.Write("Capitalizaciones por año: ");
-            int capitalizaciones = int.Parse(Console.ReadLine());
+            Console.Write("Frecuencia de la tasa (Capitalizaciones al año, ej: Mensual=12): ");
+            int cap = int.Parse(Console.ReadLine() ?? "0");
 
-            Console.Write("Pagos por año: ");
-            int pagos = int.Parse(Console.ReadLine());
+            Console.Write("Frecuencia de pago (Pagos al año, ej: Mensual=12): ");
+            int pagosAnuales = int.Parse(Console.ReadLine() ?? "0");
 
-            Console.Write("Número de periodos: ");
-            int periodos = int.Parse(Console.ReadLine());
+            Console.Write("Plazo total (Número de períodos): ");
+            int plazo = int.Parse(Console.ReadLine() ?? "0");
 
-            double tasaPeriodo = ConversorTasas.ParsearTasa(
-                tasa, tipo, clase, capitalizaciones, pagos);
+            
+            double ea = ConversorTasas.ConvertirAEfectivaMensual(tasaInput, tipo ?? "", clase ?? "", cap);
+            double tasaPeriodica = ConversorTasas.CalcularTasaPeriodica(ea, pagosAnuales);
 
-            Console.WriteLine($"\nTasa por periodo: {tasaPeriodo * 100:F4}%\n");
+            Console.WriteLine($"\nTasa Efectiva Anual: {ea:P2}");
+            Console.WriteLine($"Tasa Periódica Aplicada: {tasaPeriodica:P4}\n");
 
-            // POLIMORFISMO
-            Credito credito = new CreditoFrances(principal, tasaPeriodo, periodos);
-
-            var tabla = credito.GenerarTabla();
-
-            foreach (var cuota in tabla)
+            
+            Credito miCredito = new CreditoCuotaFija(monto, tasaPeriodica, plazo);
+            switch (opcion)
             {
-                Console.WriteLine(
-                    $"Periodo {cuota.Numero} | " +
-                    $"Cuota: {cuota.CuotaValor:C} | " +
-                    $"Interés: {cuota.Interes:C} | " +
-                    $"Capital: {cuota.AbonoCapital:C} | " +
-                    $"Saldo: {cuota.SaldoRestante:C}");
+                case 2:
+                    miCredito = new CreditoAbonoConstante(monto, tasaPeriodica, plazo);
+                    break;
+                case 3:
+                    miCredito = new CreditoTasaVariableCuotaFija(monto, tasaPeriodica, plazo);
+                    break;
+                default:
+                    miCredito = new CreditoCuotaFija(monto, tasaPeriodica, plazo);
+                    break;
             }
+
+
+            Console.Write("¿Desea agregar un abono extraordinario en el periodo 3? (s/n): ");
+            if ((Console.ReadLine() ?? "").ToLower() == "s")
+            {
+                miCredito.AbonosExtraordinarios.Add(3, 1000000); 
+            }
+
+            var tabla = miCredito.GenerarTabla();
+
+        
+            Console.WriteLine("-------------------------------------------------------------------------------");
+            Console.WriteLine("| Per |    Cuota    |   Interés   |   Capital   |    Extra    |    Saldo    |");
+            Console.WriteLine("-------------------------------------------------------------------------------");
+            foreach (var c in tabla)
+            {
+                Console.WriteLine($"| {c.Numero,-3} | {c.ValorCuota,11:C} | {c.Interes,11:C} | {c.AbonoCapital,11:C} | {c.AbonoExtraordinario,11:C} | {c.SaldoRestante,11:C} |");
+            }
+            Console.WriteLine("-------------------------------------------------------------------------------");
 
             Console.ReadLine();
         }

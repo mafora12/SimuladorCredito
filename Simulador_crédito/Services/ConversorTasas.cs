@@ -4,44 +4,33 @@ namespace SimuladorCredito.Services
 {
     public static class ConversorTasas
     {
-        public static double NominalAEfectivaAnual(double tasaNominal, int capitalizaciones)
+        public static double ConvertirAEfectivaMensual(double tasa, string tipo, string clase, int capitalizacionesAlAno)
         {
-            return Math.Pow(1 + tasaNominal / capitalizaciones, capitalizaciones) - 1;
-        }
+            double efectivaAnual;
 
-        public static double EfectivaAnualAPeriodo(double tasaEfectivaAnual, int pagosPorAnio)
-        {
-            return Math.Pow(1 + tasaEfectivaAnual, 1.0 / pagosPorAnio) - 1;
-        }
-
-        public static double AnticipadaAVencida(double tasaAnticipada)
-        {
-            return tasaAnticipada / (1 - tasaAnticipada);
-        }
-
-        public static double ParsearTasa(
-            double tasa,
-            string tipo,
-            string clase,
-            int capitalizaciones,
-            int pagosPorAnio)
-        {
-            double tasaPeriodo;
-
+            
             if (tipo.ToLower() == "nominal")
             {
-                var efectiva = NominalAEfectivaAnual(tasa, capitalizaciones);
-                tasaPeriodo = EfectivaAnualAPeriodo(efectiva, pagosPorAnio);
+                efectivaAnual = Math.Pow(1 + (tasa / capitalizacionesAlAno), capitalizacionesAlAno) - 1;
             }
-            else
+            else 
             {
-                tasaPeriodo = EfectivaAnualAPeriodo(tasa, pagosPorAnio);
+                efectivaAnual = tasa;
             }
 
+           
             if (clase.ToLower() == "anticipada")
-                tasaPeriodo = AnticipadaAVencida(tasaPeriodo);
+            {
+                efectivaAnual = efectivaAnual / (1 - efectivaAnual);
+            }
 
-            return tasaPeriodo;
+            return efectivaAnual;
+        }
+
+        public static double CalcularTasaPeriodica(double efectivaAnual, int pagosAlAno)
+        {
+            
+            return Math.Pow(1 + efectivaAnual, 1.0 / pagosAlAno) - 1;
         }
     }
 }

@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SimuladorCredito.Models
 {
     public abstract class Credito
     {
-        public decimal Principal { get; protected set; }
-        public double Tasa { get; protected set; }
-        public int NumeroPeriodos { get; protected set; }
+        
+        public decimal Monto { get; protected set; }
+        public double TasaPeriodica { get; protected set; }
+        public int Plazo { get; protected set; }
+        public Dictionary<int, decimal> AbonosExtraordinarios { get; set; } = new Dictionary<int, decimal>();
 
-        protected Credito(decimal principal, double tasa, int numeroPeriodos)
+        protected Credito(decimal monto, double tasaPeriodica, int plazo)
         {
-            Principal = principal;
-            Tasa = tasa;
-            NumeroPeriodos = numeroPeriodos;
+            Monto = monto;
+            TasaPeriodica = tasaPeriodica;
+            Plazo = plazo;
         }
 
-        // POLIMORFISMO
         public abstract List<Cuota> GenerarTabla();
     }
 }
