@@ -5,6 +5,8 @@ WORKDIR /app
 COPY . ./
 RUN dotnet restore
 RUN dotnet publish -c Release -o out
+RUN dotnet restore SimuladorCreditoWeb/SimuladorCreditoWeb.csproj
+RUN dotnet publish SimuladorCreditoWeb/SimuladorCreditoWeb.csproj -c Release -o out
 
 # Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
