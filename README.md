@@ -74,6 +74,13 @@ Puedes acceder al sistema directamente desde el siguiente enlace:
     ```
 5.  **Abrir en el navegador:**
     `http://localhost:5000` o la URL indicada en la terminal.
+    
+* Tambien es posible
+  
+1. **Clona el repositorio**
+2. **Abre el proyecto** en Visual Studio
+3. **Ejecuta** la aplicación (presiona `F5`)
+4. **Se abre** automáticamente en tu navegador
 
 ---
 
