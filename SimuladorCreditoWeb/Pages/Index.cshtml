@@ -1,0 +1,295 @@
+﻿@page
+@model IndexModel
+@using System.Text.Json
+@using System.Linq
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    font-family: 'Segoe UI';
+    background: #eef2f7;
+    margin: 0;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+}
+
+.card {
+    display: flex;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.left {
+    width: 40%;
+    background: linear-gradient(135deg, #4f6edb, #6c8ef5);
+    color: white;
+    padding: 30px;
+}
+
+.left h2 {
+    margin-bottom: 10px;
+}
+
+.left p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.right {
+    width: 60%;
+    padding: 30px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: #4f6edb;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.actions button {
+    width: 50%;
+}
+
+.table-card {
+        margin-top: 20px;
+        padding: 20px;
+        display: block;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #4f6edb;
+    color: white;
+}
+
+td, th {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+canvas {
+        width: 100% !important;
+        height: 500px !important;
+}
+</style>
+
+<div class="container">
+
+<div class="card">
+
+<div class="left">
+    <h2>Simulador de Crédito</h2>
+    <p>Calcula tu préstamo con precisión.</p>
+
+    <br>
+
+    <p>✔ Tabla completa</p>
+    <p>✔ Gráfica dinámica</p>
+    <p>✔ Exportación a Excel</p>
+
+    <br>
+
+    <small>Ejemplo:</small>
+    <p>Monto: 10,000,000</p>
+    <p>Tasa: 12%</p>
+    <p>Plazo: 24</p>
+</div>
+
+<div class="right">
+
+<form method="post">
+
+<label>Modalidad</label>
+<select name="Opcion">
+    <option value="1">Cuota Fija</option>
+    <option value="2">Abono Constante</option>
+    <option value="3">Tasa Variable - Cuota Fija</option>
+</select>
+
+<label>Monto</label>
+<input name="Monto" placeholder="Ej: 10000000" />
+
+<label>Tasa (%)</label>
+<input name="Tasa" placeholder="Ej: 12" />
+
+<label>Tipo</label>
+<select name="Tipo">
+    <option>Nominal</option>
+    <option>Efectiva</option>
+</select>
+
+<label>Clase</label>
+<select name="Clase">
+    <option>Vencida</option>
+    <option>Anticipada</option>
+</select>
+
+<label>Capitalizaciones/año</label>
+<input name="Capitalizaciones" placeholder="Ej: 12" />
+
+<label>Pagos/año</label>
+<input name="PagosAnuales" placeholder="Ej: 12" />
+
+<label>Plazo</label>
+<input name="Plazo" placeholder="Ej: 24" />
+
+<label>
+<input type="checkbox" name="UsarExtra" />
+Abono extraordinario
+</label>
+
+                <div class="actions">
+                    <button>Simular</button>
+                </div>
+            </form>
+
+            <form method="post" asp-page-handler="ExportExcel">
+                <button>Exportar Excel</button>
+            </form>
+</div>
+
+</div>
+</div>
+
+@if (Model.Tabla != null && Model.Tabla.Count > 0)
+{
+    <div class="card table-card">
+
+        <h3>Resultado</h3>
+
+        <table>
+            <tr>
+                <th>Per</th>
+                <th>Cuota</th>
+                <th>Interés</th>
+                <th>Capital</th>
+                <th>Extra</th>
+                <th>Saldo</th>
+            </tr>
+
+            @foreach (var c in Model.Tabla)
+            {
+                <tr>
+                    <td>@c.Numero</td>
+                    <td>@c.ValorCuota</td>
+                    <td>@c.Interes</td>
+                    <td>@c.AbonoCapital</td>
+                    <td>@c.AbonoExtraordinario</td>
+                    <td>@c.SaldoRestante</td>
+                </tr>
+            }
+        </table>
+
+        <canvas id="grafica"></canvas>
+
+    </div>
+}
+
+<script>
+    var labels = @Html.Raw(JsonSerializer.Serialize(Model.Tabla?.Select(c => c.Numero) ?? new List<int>()));
+    var saldo = @Html.Raw(JsonSerializer.Serialize(Model.Tabla?.Select(c => (double)c.SaldoRestante) ?? new List<double>()));
+    var interes = @Html.Raw(JsonSerializer.Serialize(Model.Tabla?.Select(c => (double)c.Interes) ?? new List<double>()));
+    var capital = @Html.Raw(JsonSerializer.Serialize(Model.Tabla?.Select(c => (double)c.AbonoCapital) ?? new List<double>()));
+
+    if(labels && labels.length > 0) {
+        new Chart(document.getElementById('grafica'),{
+            type:'line',
+            data:{
+                labels:labels,
+                datasets:[
+                    {
+                        label:'Saldo Total',
+                        data:saldo,
+                        borderColor: '#4f6edb',
+                        backgroundColor: 'rgba(79, 110, 219, 0.1)',
+                        borderWidth:3,
+                        yAxisID: 'y', 
+                        fill: true
+                    },
+                    {
+                        label:'Interés Mensual',
+                        data:interes,
+                        borderColor: '#e74c3c',
+                        borderWidth:2,
+                        yAxisID: 'y1', 
+                    },
+                    {
+                        label:'Abono Capital',
+                        data:capital,
+                        borderColor: '#2ecc71',
+                        borderWidth:2,
+                        yAxisID: 'y1', 
+                    }
+                ]
+            },
+            options:{
+                responsive: true,
+                interaction: { mode: 'index', intersect: false },
+                scales:{
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'Saldo Total' },
+                        ticks: { callback: v => '$' + v.toLocaleString('es-CO') }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'Pagos Mensuales' },
+                        grid: { drawOnChartArea: false }, 
+                        ticks: { callback: v => '$' + v.toLocaleString('es-CO') }
+                    }
+                },
+                plugins:{
+                    tooltip:{
+                        callbacks:{
+                            label: function(ctx){
+                                return ctx.dataset.label + ": $" + Number(ctx.raw).toLocaleString('es-CO');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        console.log("Datos cargados:", labels.length); // Agrega esto para depurar en la consola (F12)
+    } else {
+        console.log("No hay datos en la tabla");
+    }
+</script>
