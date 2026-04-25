@@ -11,56 +11,113 @@ Este proyecto consiste en el desarrollo de un **simulador financiero integral**,
 
 ---
 
-## Descripción del Proyecto
-El simulador procesa variables financieras complejas para ofrecer una visión detallada del costo del dinero en el tiempo. Permite al usuario analizar el impacto de diferentes tasas y tipos de cuotas antes de tomar una decisión financiera.
 
-### 1. Modalidades de Simulación
-El sistema soporta las tres estructuras principales de amortización:
-* **Tasa fija – Cuota fija:** (Sistema Francés) La cuota se mantiene constante durante todo el plazo.
-* **Tasa variable – Cuota fija:** El valor de la cuota es constante, pero la distribución entre capital e interés varía según la tasa.
-* **Tasa variable – Cuota variable:** (Abono constante a capital) La cuota disminuye periódicamente a medida que bajan los intereses.
-
-### 2.  Parámetros de Entrada
-El usuario puede personalizar la simulación mediante:
-* **Monto del crédito:** Valor total solicitado.
-* **Tasa de interés:** Soporte para tasas **Nominales** y **Efectivas**.
-* **Periodicidad:** Mensual, trimestral, semestral o anual.
-* **Tipo de liquidación:** Anticipada o Vencida.
-* **Abonos extraordinarios:** Capacidad de programar pagos adicionales que afecten el saldo pendiente.
-
-### 3. Procesamiento Matemático
-El motor financiero del simulador implementa:
-* Cálculo de cuotas mediante fórmulas de **Anualidades**.
-* Ajuste dinámico de saldos y recálculos ante **pagos extra**.
-* Conversión automática entre tasas nominales y efectivas.
-* Desglose período a período de: Intereses, Abono a capital y Saldo pendiente.
+El sistema genera:
+* **Tabla de amortización** completa.
+* **Gráfica dinámica** del comportamiento del crédito.
+* **Exportación a Excel** del plan de pagos.
 
 ---
 
-## Características del Sistema
+##  Funcionalidades Principales
 
-### Generación del Plan de Pagos
-* **Tabla de Amortización:** Detalle numerado de cuotas, intereses, capital amortizado y saldo restante.
-* **Visualización:** Formato organizado para lectura rápida en consola o interfaz local.
-* **Gráficas (En desarrollo):** Representación visual de la disminución del saldo y evolución de intereses.
+###  Simulación de Crédito
+Permite realizar cálculos basados en:
+* **Cuota fija** (Sistema Francés).
+* **Abono constante** a capital (Sistema Alemán).
+* **Tasa variable**.
+* **Conversión de tasas**: Nominal a Efectiva, Vencida a Anticipada.
+* **Abonos extraordinarios**: Aplicación de pagos adicionales al capital.
 
-### Exportación de Resultados
-* Generación de archivos **CSV**.
-* Resumen descargable en formato **.xlsx** (Excel) para análisis externo.
-
----
-
-## 🛠️ Herramientas y Tecnologías
-* **Lenguaje:** [C#](https://learn.microsoft.com/en-us/dotnet/csharp/)
-* **Entorno de Desarrollo:** Visual Studio / VS Code.
-* **Control de Versiones:** GitHub.
-* **Arquitectura:** Programación Orientada a Objetos (POO) con Polimorfismo.
+###  Visualización y Herramientas
+* **Tabla detallada**: Desglose por periodo, cuota, interés, capital y saldo restante.
+* **Gráfica interactiva**: Visualización de la evolución del crédito mediante **Chart.js**.
+* **Reportes**: Generación de archivos descargables en formato Excel.
 
 ---
 
-## Alcance y Delimitaciones
-* **Incluye:** Diseño de interfaz funcional, lógica matemática local y comparación de modalidades.
-* **No incluye:** Conexión a bases de datos externas, gestión de perfiles de usuario o integración con APIs bancarias reales.
+##  Ejecutable (Deploy)
+
+Puedes acceder al sistema directamente desde el siguiente enlace:
+
+[**Simulador de Crédito en Vivo**](https://simulador-credito-cws8.onrender.com/)
+
+> [!WARNING]
+> La aplicación está desplegada en **Render (plan gratuito)**, por lo que puede tardar unos segundos en "despertar" y cargar si ha estado inactiva.
+
+---
+
+##  Cómo ejecutar el proyecto localmente
+
+### Requisitos
+* [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+* Visual Studio 2022 o VS Code
+
+### Pasos
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone [https://github.com/mafora12/SimuladorCredito.git](https://github.com/mafora12/SimuladorCredito.git)
+    ```
+2.  **Entrar al directorio:**
+    ```bash
+    cd SimuladorCredito
+    ```
+3.  **Restaurar dependencias:**
+    ```bash
+    dotnet restore
+    ```
+4.  **Ejecutar la aplicación:**
+    ```bash
+    dotnet run
+    ```
+5.  **Abrir en el navegador:**
+    `http://localhost:5000` o la URL indicada en la terminal.
+
+---
+
+##  Arquitectura y Diseño
+
+El proyecto implementa una estructura basada en la separación de responsabilidades y patrones de diseño:
+
+* **Models**: Representación de las entidades de datos (ej: `PaymentDetail`).
+* **Services**: Capa donde reside toda la lógica de negocio y cálculos financieros.
+* **Factory Pattern**: Utilizado para la creación dinámica de los diferentes tipos de crédito.
+* **Facade Pattern**: Simplifica el acceso a la lógica del sistema desde la interfaz de usuario.
+
+**Beneficios:** Escalabilidad, mantenimiento sencillo y bajo acoplamiento.
+
+---
+
+##  Pruebas Unitarias
+
+Se incluye un proyecto de pruebas orientado a validar la integridad de los cálculos:
+* ✅ Cálculo exacto de cuotas.
+* ✅ Conversión precisa de tasas de interés.
+* ✅ Comportamiento y reducción del saldo tras abonos.
+
+---
+
+##  Tecnologías Utilizadas
+* **Backend:** ASP.NET Core Razor Pages (.NET 8)
+* **Lenguaje:** C#
+* **Frontend:** HTML, CSS, JavaScript
+* **Gráficas:** Chart.js
+* **Excel:** EPPlus
+
+---
+
+##  Recursos de Terceros
+| Recurso | Uso | Licencia |
+| :--- | :--- | :--- |
+| **Chart.js** | Visualización de gráficos | MIT |
+| **EPPlus** | Generación de archivos Excel | Polyform Noncommercial 1.0 |
+
+---
+
+##  Consideraciones
+* El sistema fue probado bajo condiciones normales de uso.
+* No presenta errores críticos en la simulación.
+* Cumple con las funcionalidades planteadas inicialmente.
   
 ## Link para  la explicación del proyecto de curso   
 https://docs.google.com/document/d/14o10_Fbp8LtMwTeqWNDWJmMpt_qhT-LE82HSwvJj8vQ/edit?usp=sharing
