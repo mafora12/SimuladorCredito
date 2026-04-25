@@ -16,7 +16,7 @@ El sistema genera:
 * **Tabla de amortización** completa.
 * **Gráfica dinámica** del comportamiento del crédito.
 * **Reportes (Beta)**: El sistema permite la descarga de archivos en formato Excel, aunque actualmente la exportación se encuentra en fase de ajuste para asegurar la precisión total de los datos transferidos.
-  ## ⚠️ Consideraciones
+  ## Consideraciones
 * El sistema fue probado bajo condiciones normales de uso y no presenta errores críticos en la simulación web.
 * **Nota sobre Excel**: La función de exportación está habilitada para descarga, pero se advierte que los datos en el archivo podrían no coincidir exactamente con la tabla web en ciertos escenarios complejos (funcionalidad en proceso de mejora).
 ---
