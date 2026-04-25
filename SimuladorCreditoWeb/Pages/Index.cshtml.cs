@@ -30,10 +30,21 @@ namespace SimuladorCreditoWeb.Pages
         public void OnPost()
         {
 
-            Tabla = _simulador.GenerarSimulacion(Opcion, Monto, Tasa, Tipo, Clase, Capitalizaciones, PagosAnuales, Plazo, UsarExtra);
-        }
+            try
+            {
+                Tabla = _simulador.GenerarSimulacion(Opcion, Monto, Tasa, Tipo, Clase, Capitalizaciones, PagosAnuales, Plazo, UsarExtra);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                Tabla = new List<Cuota>();
+            }
 
-        public IActionResult OnPostExportExcel()
+        }    
+
+
+
+public IActionResult OnPostExportExcel()
         {
             ExcelPackage.License.SetNonCommercialPersonal("Mariana Florez");
             using var package = new ExcelPackage();

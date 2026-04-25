@@ -27,8 +27,10 @@ namespace SimuladorCredito.Models
                 
                 decimal valorCuota = abonoPrincipal + interes;
 
-                
-                decimal extra = AbonosExtraordinarios.ContainsKey(i) ? AbonosExtraordinarios[i] : 0;
+
+                decimal extra = (AbonosExtraordinarios != null && AbonosExtraordinarios.ContainsKey(i))
+                    ? AbonosExtraordinarios[i]
+                    : 0;
 
                 saldo -= (abonoPrincipal + extra);
                 if (saldo < 0) saldo = 0;

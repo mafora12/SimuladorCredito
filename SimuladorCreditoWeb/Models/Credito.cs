@@ -8,7 +8,7 @@ namespace SimuladorCredito.Models
         public decimal Monto { get; protected set; }
         public double TasaPeriodica { get; protected set; }
         public int Plazo { get; protected set; }
-        public Dictionary<int, decimal> AbonosExtraordinarios { get; set; } = new Dictionary<int, decimal>();
+        public Dictionary<int, decimal> AbonosExtraordinarios { get; set; } = new();
 
         protected Credito(decimal monto, double tasaPeriodica, int plazo)
         {

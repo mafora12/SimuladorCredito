@@ -24,7 +24,9 @@ namespace SimuladorCredito.Models
 
                 if (abonoPrincipal < 0) abonoPrincipal = 0;
 
-                decimal extra = AbonosExtraordinarios.ContainsKey(i) ? AbonosExtraordinarios[i] : 0;
+                decimal extra = (AbonosExtraordinarios != null && AbonosExtraordinarios.ContainsKey(i))
+                    ? AbonosExtraordinarios[i]
+                    : 0;
 
                 saldo -= (abonoPrincipal + extra);
                 saldo = Math.Round(saldo, 2);
