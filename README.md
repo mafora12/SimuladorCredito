@@ -95,16 +95,6 @@ El proyecto implementa una estructura basada en la separación de responsabilida
 
 **Beneficios:** Escalabilidad, mantenimiento sencillo y bajo acoplamiento.
 
----
-
-##  Pruebas Unitarias
-
-Se incluye un proyecto de pruebas orientado a validar la integridad de los cálculos:
-* ✅ Cálculo exacto de cuotas.
-* ✅ Conversión precisa de tasas de interés.
-* ✅ Comportamiento y reducción del saldo tras abonos.
-
----
 
 ##  Tecnologías Utilizadas
 * **Backend:** ASP.NET Core Razor Pages (.NET 8)
