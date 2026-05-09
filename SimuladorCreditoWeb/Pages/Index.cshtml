@@ -168,18 +168,62 @@ canvas {
 <label>Plazo</label>
 <input name="Plazo" placeholder="Ej: 24" />
 
-<label>
-<input type="checkbox" name="UsarExtra" />
-Abono extraordinario
-</label>
+                <label>
+                    <input type="checkbox" id="chkExtra" name="UsarExtra" value="true" onchange="toggleExtra(this)" />
+                    <input type="hidden" name="UsarExtra" value="false" />
+                    Abono extraordinario
+                </label>
+
+                <div id="seccionExtra" style="display:none; background:#f0f4ff; border-radius:10px; padding:15px; margin-bottom:15px;">
+                    <label style="color:#4f6edb;">Abonos Extraordinarios</label>
+                    <div id="listaAbonos"></div>
+                    <button type="button" onclick="agregarAbono()"
+                            style="background:#6c8ef5; margin-top:8px; padding:8px; font-size:13px;">
+                        + Agregar abono
+                    </button>
+                </div>
+
+                <script>
+                    function toggleExtra(cb) {
+                        document.getElementById('seccionExtra').style.display = cb.checked ? 'block' : 'none';
+                    }
+
+                    function agregarAbono() {
+                        const div = document.createElement('div');
+                        div.style.cssText = 'display:flex; gap:8px; margin-bottom:8px;';
+                        div.innerHTML = `
+                            <input type="number" name="PeriodosExtra" placeholder="Período (ej: 6)"
+                                style="width:50%; margin-bottom:0;" min="1" />
+                            <input type="number" name="MontoExtra" placeholder="Monto (ej: 1000000)"
+                                style="width:50%; margin-bottom:0;" min="0" />
+                            <button type="button" onclick="this.parentElement.remove()"
+                                style="width:auto; background:#e74c3c; padding:8px 12px;">✕</button>
+                        `;
+                        document.getElementById('listaAbonos').appendChild(div);
+                    }
+                </script>
 
                 <div class="actions">
                     <button>Simular</button>
                 </div>
             </form>
 
-            <form method="post" asp-page-handler="ExportExcel">
-                <button>Exportar Excel</button>
+            <form method="post" asp-page-handler="ExportExcel" id="formExport">
+                <input type="hidden" name="Opcion" value="@Model.Opcion" />
+                <input type="hidden" name="Monto" value="@Model.Monto" />
+                <input type="hidden" name="Tasa" value="@Model.Tasa" />
+                <input type="hidden" name="Tipo" value="@Model.Tipo" />
+                <input type="hidden" name="Clase" value="@Model.Clase" />
+                <input type="hidden" name="Capitalizaciones" value="@Model.Capitalizaciones" />
+                <input type="hidden" name="PagosAnuales" value="@Model.PagosAnuales" />
+                <input type="hidden" name="Plazo" value="@Model.Plazo" />
+                <input type="hidden" name="UsarExtra" value="@Model.UsarExtra.ToString().ToLower()" />
+                @for (int i = 0; i < Model.PeriodosExtra.Count; i++)
+                {
+                    <input type="hidden" name="PeriodosExtra" value="@Model.PeriodosExtra[i]" />
+                    <input type="hidden" name="MontoExtra" value="@Model.MontoExtra[i]" />
+                }
+                <button type="submit" style="margin-top:10px;">Exportar Excel</button>
             </form>
 </div>
 
